@@ -1,0 +1,10 @@
+name: twitch-in-minecraft
+description: 'Twitch in Minecraft'
+version: ${version}
+api-version: 1.13
+main: me.mommde.twitchinminecraft.TwitchInMinecraftPlugin
+authors:
+  - MoMMde
+
+libraries:
+  - "net.axay:kspigot:1.18.0"
