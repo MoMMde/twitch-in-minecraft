@@ -7,10 +7,11 @@ import me.mommde.twitchinminecraft.neutralDarkChatColor
 import me.mommde.twitchinminecraft.twitch.TwitchChannelSubscription
 import me.mommde.twitchinminecraft.twitch.getSubscriptionType
 import net.axay.kspigot.chat.KColors
+import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.entity.Player
 
-fun buildListTextComponent(player: Player): TextComponent {
+fun buildListTextComponent(player: Player, subscription: TwitchChannelSubscription? = null): TextComponent {
     val totalNotification = player.tim.channelsListeningNotificationInfo
     val totalChat = player.tim.channelsListeningChatMessages
     return literalTimMessage("Here is a list of Channels you subscribed") {
@@ -25,6 +26,7 @@ fun buildListTextComponent(player: Player): TextComponent {
         newLine()
         text("▣ Notification") {
             color = KColors.BLUEVIOLET
+            clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list notification")
         }
         text(" | ") {
             color = neutralDarkChatColor
@@ -32,6 +34,7 @@ fun buildListTextComponent(player: Player): TextComponent {
         }
         text("▣ Chat") {
             color = KColors.YELLOW
+            clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list chat")
         }
         text(" | ") {
             color = neutralDarkChatColor
@@ -39,10 +42,12 @@ fun buildListTextComponent(player: Player): TextComponent {
         }
         text("▣ Both") {
             color = KColors.GREEN
+            clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list both")
         }
         newLine()
         newLine()
-        getSubscriptionType(totalNotification, totalChat).forEach { (channel, type) ->
+        for((channel,type) in getSubscriptionType(totalNotification, totalChat)) {
+            if (type != subscription && subscription != null) continue
             val coloredChannelSubscription = when (type) {
                 TwitchChannelSubscription.BOTH -> KColors.GREEN
                 TwitchChannelSubscription.CHAT -> KColors.YELLOW

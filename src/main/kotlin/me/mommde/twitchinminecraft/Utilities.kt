@@ -4,6 +4,7 @@ import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.LiteralTextBuilder
 import net.axay.kspigot.chat.col
 import net.axay.kspigot.chat.literalText
+import net.md_5.bungee.api.ChatColor
 import net.md_5.bungee.api.chat.ClickEvent
 
 inline fun literalTimMessage(
@@ -25,4 +26,4 @@ public val positiveColor = col("#00e647")
 public val negativeColor = col("#e6003a")
 
 public val neutralDarkChatColor = col("#737373")
-public val neutralChatColor = KColors.NAVAJOWHITE
+public val neutralChatColor: ChatColor = KColors.NAVAJOWHITE

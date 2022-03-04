@@ -2,14 +2,19 @@ package me.mommde.twitchinminecraft
 
 import com.github.twitch4j.TwitchClientBuilder
 import me.mommde.twitchinminecraft.commands.TwitchInMinecraftCommand
+import me.mommde.twitchinminecraft.listener.AutoUnregistrationListener
+import me.mommde.twitchinminecraft.twitch.TwitchChatProvider
 import me.mommde.twitchinminecraft.twitch.TwitchLiveProvider
 import net.axay.kspigot.main.KSpigot
+import org.bukkit.Bukkit
 
 class TwitchInMinecraftPlugin : KSpigot() {
-    private val twitch = TwitchClientBuilder.builder()
+    val twitch = TwitchClientBuilder.builder()
         .withEnableHelix(true)
+        .withEnableChat(true)
         .build()
-    private val twitchLiveProvider = TwitchLiveProvider(twitch)
+    val twitchLiveProvider = TwitchLiveProvider(twitch)
+    val twitchChatProvider = TwitchChatProvider(twitch)
 
     override fun load() {
         slF4JLogger.debug("Load function called on Twitch in Minecraft Plugin")
@@ -17,6 +22,7 @@ class TwitchInMinecraftPlugin : KSpigot() {
 
     override fun startup() {
         TwitchInMinecraftCommand(this).register()
+        Bukkit.getPluginManager().registerEvents(AutoUnregistrationListener(this), this)
     }
 
     override fun shutdown() {
