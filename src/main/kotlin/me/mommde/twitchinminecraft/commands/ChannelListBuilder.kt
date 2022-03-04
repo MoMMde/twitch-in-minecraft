@@ -46,7 +46,7 @@ fun buildListTextComponent(player: Player, subscription: TwitchChannelSubscripti
         }
         newLine()
         newLine()
-        for((channel,type) in getSubscriptionType(totalNotification, totalChat)) {
+        for ((channel, type) in getSubscriptionType(totalNotification, totalChat)) {
             if (type != subscription && subscription != null) continue
             val coloredChannelSubscription = when (type) {
                 TwitchChannelSubscription.BOTH -> KColors.GREEN

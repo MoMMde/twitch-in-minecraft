@@ -30,10 +30,10 @@ val twitchColors = mutableMapOf<String, ChatColor>()
 fun updateAttachedChannels(twitchClient: TwitchClient) {
     val totalChats = mutableListOf<String>()
     val twitchChat = twitchClient.chat
-    for(player in onlinePlayers) {
+    for (player in onlinePlayers) {
         val tim = player.tim
         if (tim.channelsListeningChatMessages.isEmpty() && tim.channelsListeningNotificationInfo.isEmpty()) continue
-        totalChats.addAll (tim.channelsListeningChatMessages + tim.channelsListeningNotificationInfo)
+        totalChats.addAll(tim.channelsListeningChatMessages + tim.channelsListeningNotificationInfo)
     }
     for (chat in totalChats) {
         if (!twitchChat.isChannelJoined(chat)) {

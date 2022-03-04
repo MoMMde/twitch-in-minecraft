@@ -17,5 +17,4 @@ class AutoUnregistrationListener(
         plugin.twitchChatProvider.unregisterChannels(player, *tim.channelsListeningChatMessages.toTypedArray())
         plugin.twitchLiveProvider.unregisterChannels(player, *tim.channelsListeningNotificationInfo.toTypedArray())
     }
-
 }

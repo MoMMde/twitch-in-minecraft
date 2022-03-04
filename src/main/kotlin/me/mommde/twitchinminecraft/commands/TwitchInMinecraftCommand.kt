@@ -2,11 +2,21 @@ package me.mommde.twitchinminecraft.commands
 
 import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.builder.ArgumentBuilder
-import me.mommde.twitchinminecraft.*
+import me.mommde.twitchinminecraft.TwitchInMinecraftPlugin
+import me.mommde.twitchinminecraft.literalTimMessage
 import me.mommde.twitchinminecraft.models.tim
+import me.mommde.twitchinminecraft.negativeColor
+import me.mommde.twitchinminecraft.neutralChatColor
+import me.mommde.twitchinminecraft.neutralDarkChatColor
+import me.mommde.twitchinminecraft.positiveColor
 import me.mommde.twitchinminecraft.twitch.TwitchChannelSubscription
 import net.axay.kspigot.chat.KColors
-import net.axay.kspigot.commands.*
+import net.axay.kspigot.commands.CommandContext
+import net.axay.kspigot.commands.argument
+import net.axay.kspigot.commands.command
+import net.axay.kspigot.commands.literal
+import net.axay.kspigot.commands.requiresPermission
+import net.axay.kspigot.commands.runs
 import net.axay.kspigot.main.KSpigotMainInstance
 import net.md_5.bungee.api.chat.ClickEvent
 import net.minecraft.commands.CommandSourceStack
@@ -33,9 +43,11 @@ class TwitchInMinecraftCommand(
                             )
                         )
                     } else {
-                        player.sendMessage(literalTimMessage("Invalid Filter! Using none...") {
-                            color = negativeColor
-                        })
+                        player.sendMessage(
+                            literalTimMessage("Invalid Filter! Using none...") {
+                                color = negativeColor
+                            }
+                        )
                         player.sendMessage(buildListTextComponent(player))
                     }
                 }
@@ -115,26 +127,30 @@ class TwitchInMinecraftCommand(
             literal("channels") {
                 runs {
                     val connections = twitchInMinecraftPlugin.twitch.chat.channels
-                    player.sendMessage(literalTimMessage("Connected to: ${connections.size}; ") {
-                        connections.forEachIndexed { index, channel ->
-                            text("${index + 1}. $channel") {
-                                color = KColors.GREEN
-                            }
-                            if (index < connections.size - 1) {
-                                text(", ") {
-                                    color = neutralDarkChatColor
+                    player.sendMessage(
+                        literalTimMessage("Connected to: ${connections.size}; ") {
+                            connections.forEachIndexed { index, channel ->
+                                text("${index + 1}. $channel") {
+                                    color = KColors.GREEN
+                                }
+                                if (index < connections.size - 1) {
+                                    text(", ") {
+                                        color = neutralDarkChatColor
+                                    }
                                 }
                             }
                         }
-                    })
+                    )
                 }
             }
             literal("reconnect") {
                 runs {
                     twitchInMinecraftPlugin.twitch.chat.reconnect()
-                    player.sendMessage(literalTimMessage("Reconnected!") {
-                        bold = true
-                    })
+                    player.sendMessage(
+                        literalTimMessage("Reconnected!") {
+                            bold = true
+                        }
+                    )
                 }
             }
         }
@@ -173,77 +189,84 @@ class TwitchInMinecraftCommand(
     private fun joinNotificationChannel(player: Player, channels: List<String>) {
         KSpigotMainInstance.slF4JLogger.debug("Registering notification channels: $channels for user: ${player.name}")
         twitchInMinecraftPlugin.twitchLiveProvider.registerChannels(player, *channels.toTypedArray())
-        player.sendMessage(literalTimMessage("You will now be notified when these channels go live.") {
-            newLine()
-            text("Total: ") {
-                color = neutralChatColor
+        player.sendMessage(
+            literalTimMessage("You will now be notified when these channels go live.") {
+                newLine()
+                text("Total: ") {
+                    color = neutralChatColor
+                }
+                text(player.tim.channelsListeningNotificationInfo.size.toString()) {
+                    color = positiveColor
+                    bold = true
+                }
+                text(" [Click]") {
+                    color = KColors.GREEN
+                    clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list NOTIFICATION")
+                }
             }
-            text(player.tim.channelsListeningNotificationInfo.size.toString()) {
-                color = positiveColor
-                bold = true
-            }
-            text(" [Click]") {
-                color = KColors.GREEN
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list NOTIFICATION")
-            }
-        })
+        )
     }
 
     private fun quitNotificationChannel(player: Player, channels: List<String>) {
         KSpigotMainInstance.slF4JLogger.debug("Unregistering notification channels: $channels for user: ${player.name}")
         twitchInMinecraftPlugin.twitchLiveProvider.unregisterChannels(player, *channels.toTypedArray())
-        player.sendMessage(literalTimMessage("You will now be notified when these channels go live.") {
-            newLine()
-            text("Total: ") {
-                color = neutralChatColor
+        player.sendMessage(
+            literalTimMessage("You will now be notified when these channels go live.") {
+                newLine()
+                text("Total: ") {
+                    color = neutralChatColor
+                }
+                text(player.tim.channelsListeningNotificationInfo.size.toString()) {
+                    color = positiveColor
+                    bold = true
+                }
+                text(" [Click]") {
+                    color = KColors.GREEN
+                    clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list NOTIFICATION")
+                }
             }
-            text(player.tim.channelsListeningNotificationInfo.size.toString()) {
-                color = positiveColor
-                bold = true
-            }
-            text(" [Click]") {
-                color = KColors.GREEN
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list NOTIFICATION")
-            }
-        })
+        )
     }
 
     private fun joinChatChannel(player: Player, channels: List<String>) {
         KSpigotMainInstance.slF4JLogger.info("Registering chat channels: $channels for user: ${player.name}")
         twitchInMinecraftPlugin.twitchChatProvider.registerChannels(player, *channels.toTypedArray())
-        player.sendMessage(literalTimMessage("You will now be notified when there is a new message in these Channels.") {
-            newLine()
-            text("Total: ") {
-                color = neutralChatColor
+        player.sendMessage(
+            literalTimMessage("You will now be notified when there is a new message in these Channels.") {
+                newLine()
+                text("Total: ") {
+                    color = neutralChatColor
+                }
+                text(player.tim.channelsListeningChatMessages.size.toString()) {
+                    color = positiveColor
+                    bold = true
+                }
+                text(" [Click]") {
+                    color = KColors.GREEN
+                    clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list CHAT")
+                }
             }
-            text(player.tim.channelsListeningChatMessages.size.toString()) {
-                color = positiveColor
-                bold = true
-            }
-            text(" [Click]") {
-                color = KColors.GREEN
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list CHAT")
-            }
-        })
+        )
     }
 
     private fun quitChatChannel(player: Player, channels: List<String>) {
         KSpigotMainInstance.slF4JLogger.info("Unregistering chat channels: $channels for user: ${player.name}")
         twitchInMinecraftPlugin.twitchChatProvider.unregisterChannels(player, *channels.toTypedArray())
-        player.sendMessage(literalTimMessage("You will now be notified when there is a new message in these Channels.") {
-            newLine()
-            text("Total: ") {
-                color = neutralChatColor
+        player.sendMessage(
+            literalTimMessage("You will now be notified when there is a new message in these Channels.") {
+                newLine()
+                text("Total: ") {
+                    color = neutralChatColor
+                }
+                text(player.tim.channelsListeningChatMessages.size.toString()) {
+                    color = positiveColor
+                    bold = true
+                }
+                text(" [Click]") {
+                    color = KColors.GREEN
+                    clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list CHAT")
+                }
             }
-            text(player.tim.channelsListeningChatMessages.size.toString()) {
-                color = positiveColor
-                bold = true
-            }
-            text(" [Click]") {
-                color = KColors.GREEN
-                clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tim list CHAT")
-            }
-        })
+        )
     }
-
 }
