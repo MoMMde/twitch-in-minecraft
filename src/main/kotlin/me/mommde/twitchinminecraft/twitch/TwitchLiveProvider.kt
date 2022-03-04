@@ -19,6 +19,7 @@ class TwitchLiveProvider(
             channelGoesLive(event.channel.name)
         }
         twitchClient.eventManager.onEvent(ChannelGoOfflineEvent::class.java) { event ->
+            channelGoesOffline(event.channel.name)
         }
     }
 
