@@ -18,6 +18,12 @@ Literals:
     + `channels`
  + `list`
 
-After Join & Quit Para
+After Join & Quit literals, there is a `String` that can be given.
+`,` and ` ` will split the names:
+
+Example
+```commandline
+/tim join_both "TjanTV, Papaplatte, Wichtiger"
+```
 
 ℹ️ **I think the names are pretty self explenatory**
